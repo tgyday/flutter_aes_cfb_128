@@ -52,3 +52,39 @@ String decryptAES(String encryptedBase64, String key) {
   }
 }
 ```
+
+# AI 改进后的版本
+
+```
+int _decryptBlock(Uint8List inp, int inpOff, Uint8List out, int outOff) {
+    // Calculate how many bytes we can actually process (may be less than blockSize)
+    final availableBytes = inp.length - inpOff;
+    final bytesToProcess =
+        availableBytes < blockSize ? availableBytes : blockSize;
+
+    if (bytesToProcess <= 0) {
+      return 0; // No data to process
+    }
+
+    // Ensure output buffer has enough space
+    if (outOff + bytesToProcess > out.length) {
+      throw ArgumentError('Output buffer too short');
+    }
+
+    // Process the current CFB state to get the keystream
+    _underlyingCipher.processBlock(_cfbV!, 0, _cfbOutV!, 0);
+
+    // XOR the keystream with ciphertext to get plaintext
+    for (var i = 0; i < bytesToProcess; i++) {
+      out[outOff + i] = _cfbOutV![i] ^ inp[inpOff + i];
+    }
+
+    // Update CFB state (shift left and insert new ciphertext)
+    final offset = _cfbV!.length - blockSize;
+    _cfbV!.setRange(0, offset, _cfbV!.sublist(bytesToProcess)); // Shift left
+    _cfbV!.setRange(offset, offset + bytesToProcess,
+        inp.sublist(inpOff, inpOff + bytesToProcess)); // Insert new ciphertext
+
+    return bytesToProcess; // Return actual bytes processed
+}
+```
