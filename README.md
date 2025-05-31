@@ -88,3 +88,32 @@ int _decryptBlock(Uint8List inp, int inpOff, Uint8List out, int outOff) {
     return bytesToProcess; // Return actual bytes processed
 }
 ```
+
+# flutter 项目引入私有包示例
+
+```
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  http: ^1.1.0
+  alipay_kit: ^6.0.0
+  fluwx: ^4.6.3
+  # encrypt: 5.0.3
+  # pointycastle: 3.8.0
+  encrypt:
+    git:
+      url: https://github.com/tgyday/flutter_aes_cfb_128.git
+      path: encrypt-5.0.3  # 子目录路径
+      ref: master
+
+dependency_overrides:
+  pointycastle:
+    git:
+      url: https://github.com/tgyday/flutter_aes_cfb_128.git
+      path: pointycastle-3.8.0 # 子目录路径
+      ref: master
+```
