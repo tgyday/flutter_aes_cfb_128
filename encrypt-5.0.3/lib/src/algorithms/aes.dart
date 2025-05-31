@@ -120,6 +120,7 @@ class AES implements Algorithm {
 enum AESMode {
   cbc,
   cfb64,
+  cfb128,
   ctr,
   ecb,
   ofb64Gctr,
@@ -131,6 +132,7 @@ enum AESMode {
 const Map<AESMode, String> _modes = {
   AESMode.cbc: 'CBC',
   AESMode.cfb64: 'CFB-64',
+  AESMode.cfb128: 'CFB-128',
   AESMode.ctr: 'CTR',
   AESMode.ecb: 'ECB',
   AESMode.ofb64Gctr: 'OFB-64/GCTR',

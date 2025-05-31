@@ -150,23 +150,40 @@ class CFBBlockCipher extends BaseBlockCipher {
   /// @exception IllegalStateException if the cipher isn't initialised.
   /// @return the number of bytes processed and produced.
   int _decryptBlock(Uint8List inp, int inpOff, Uint8List out, int outOff) {
-    if ((inpOff + blockSize) > inp.length) {
-      throw ArgumentError('Input buffer too short');
-    }
+    // if ((inpOff + blockSize) > inp.length) {
+    //   throw ArgumentError('Input buffer too short');
+    // }
 
-    if ((outOff + blockSize) > out.length) {
-      throw ArgumentError('Output buffer too short');
-    }
+    // if ((outOff + blockSize) > out.length) {
+    //   throw ArgumentError('Output buffer too short');
+    // }
 
     _underlyingCipher.processBlock(_cfbV!, 0, _cfbOutV!, 0);
 
     // change over the input block.
     var offset = _cfbV!.length - blockSize;
-    _cfbV!.setRange(0, offset, _cfbV!.sublist(blockSize));
-    _cfbV!.setRange(offset, _cfbV!.length, inp.sublist(inpOff));
+    // _cfbV!.setRange(0, offset, _cfbV!.sublist(blockSize));
+    // _cfbV!.setRange(offset, _cfbV!.length, inp.sublist(inpOff));
 
+    // _cfbV!.setRange(0, offset, _cfbV!.sublist(blockSize));
+
+    if (inp.length - inpOff < blockSize) {
+      _cfbV!.setRange(offset, inp.length - inpOff, inp.sublist(inpOff));
+    } else {
+      _cfbV!.setRange(offset, _cfbV!.length, inp.sublist(inpOff));
+    }
+
+    // // XOR the cfbV with the ciphertext producing the plaintext
+    // for (var i = 0; i < blockSize; i++) {
+    //   out[outOff + i] = _cfbOutV![i] ^ inp[inpOff + i];
+    // }
     // XOR the cfbV with the ciphertext producing the plaintext
+    int counter = 0;
     for (var i = 0; i < blockSize; i++) {
+      if (inpOff + i >= inp.length) {
+        break;
+      }
+      counter += 1;
       out[outOff + i] = _cfbOutV![i] ^ inp[inpOff + i];
     }
 
