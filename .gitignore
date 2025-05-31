@@ -1,0 +1,8 @@
+.dart_tool/
+.packages
+.pub/
+.idea/
+build/
+doc/api/
+example/issue_*
+example/local.dart
